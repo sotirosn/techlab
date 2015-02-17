@@ -7,7 +7,7 @@ ObjectId = (require 'mongoose').Schema.Types.ObjectId
 uuid = require 'uuid'
 
 db = new Database 
-    uri: 'mongodb://localhost/students'
+    uri: 'mongodb://localhost:27017/students'
 
 User = Database.define 'User',
     sid: String
