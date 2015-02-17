@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "class.js",
+  "sourceRoot": "/src",
+  "sources": [
+    "modules/class.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA,IAAA,KAAA;;AAAA;qBACI;;AAAA,EAAA,KAAC,CAAA,UAAD,GAAY,SAAC,UAAD,GAAA;WACR,MAAM,CAAC,gBAAP,CAAwB,IAAC,CAAA,SAAzB,EAA6B,UAA7B,EADQ;EAAA,CAAZ,CAAA;;eAAA;;IADJ,CAAA;;AAAA,MAIM,CAAC,OAAP,GAAiB,KAJjB,CAAA"
+}

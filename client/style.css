@@ -1,0 +1,367 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'), url('fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url('fonts/Roboto/Roboto-Light.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Condensed Light'), local('RobotoCondensed-Light'), url('fonts/Roboto_Condensed/RobotoCondensed-Light.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Condensed'), local('RobotoCondensed-Regular'), url('fonts/Roboto_Condensed/RobotoCondensed-Regular.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+[hidden=true] {
+    display: none !important;
+}
+
+body {
+    font-family: 'Roboto Condensed';
+    font-weight: 300;
+    line-height: 22px;
+    margin: 0;
+}
+
+#banner {
+    font-family: 'Roboto';
+    font-weight: 300;
+}
+
+#banner {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 80px;
+    border-bottom: 1px solid grey;
+    width: 100%;
+}
+#banner h1 {
+    font-weight: 100;
+    display: inline-block;
+    line-height: 60px;
+    margin: 10px;
+}
+#banner p {
+    float: right;
+    margin-right: 20px;
+    text-align: center;
+}
+#header a {
+    cursor: pointer;
+}
+#header a:hover {
+    color: #797979;
+}
+
+#main {
+    position: absolute;
+    top: 81px;
+    bottom: 22px;
+    left: 0px;
+    right: 0px;
+}
+
+#statusbar {
+    position: absolute;
+    height: 18px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    background: #ddd;
+    color: #222;
+    
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: .9em;
+    padding: 2px 10px;
+}
+
+#signin {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, .5);
+    z-index: 1000;
+}
+    
+#signin > div {
+    padding: 15px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300px;
+    margin-left: -150px;
+    margin-top: -75px;
+    border: 1px solid #ddd;
+    background: #f8f8f8;
+}
+
+#signin > div > label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    padding-right: 7px;
+}
+#signin > div > button {
+    margin-top: 10px;
+    float: right;
+}
+
+#leftnav {
+    position: absolute;
+    left: 0;
+    top: 0px;
+    width: 200px;
+    bottom: 0px;
+    overflow: auto;
+}
+
+#leftnav h3 {
+    font-weight: 400;
+    color: #444;
+    padding-left: 5px; 
+    margin-bottom: 2px;
+}
+
+#view {
+    position: absolute;
+    left: 210px;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+
+img.htmllink {
+    width: 50px;
+}
+
+a {
+    cursor: pointer;
+    font-weight: 300;
+    color: #111;
+}
+
+a:hover {
+    color: #2281BB;
+}
+
+vr {
+    position: absolute;
+    top: 0px;
+    bottom: 0;
+    left: 201px;
+    width: 9px;
+    background: lightgrey;
+}
+
+hierarchy {
+    display: block;
+    position: relative;
+}
+
+hierarchy label {
+    display: block;
+}
+
+div.assignmentlist {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+directory {
+    position: relative;
+    display: block;
+}
+
+directory > label {
+    background: url(folder-icon.png) no-repeat;
+    background-size: 22.5px 18px;
+    padding-left: 24px;
+}
+
+directory > a.viewlink {
+    position: absolute;
+    right: 3px;
+    top: 0;
+    font-weight: 400;
+}
+/*
+directory > a.viewlink:hover {
+    color: #888;
+    font-weight: 400;
+}*/
+
+directory > div {
+    padding-left: 15px;
+}
+
+directory.project {
+    border-top: 1px solid #ddd;
+    padding: 5px;
+    background: #f8f8f8;
+}
+
+directory.project > label {
+    /*background-image: url(site-icon.png);*/
+    font-weight: 400;
+}
+
+file > label {
+    background: url(file-icon.png) no-repeat;
+    background-size: 18px 18px;
+    padding-left: 20px;
+    cursor: pointer;
+}
+
+file > label:hover {
+    color: orange;
+}
+
+div.tabview {
+    width: 100%;
+    height: 100%;
+}
+
+div.tabs {
+    height: 22px;
+    background: #f8f8f8;
+}
+
+div.tabs > div {
+    position: relative;
+    display: inline-block;
+    height: 19px;
+    padding-top: 2px;
+    background: #ddd;
+    border: 1px solid #bbb;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+}
+    
+div.tabs > div[active=true] {
+    background: white;
+    cursor: default;
+    border: 1px solid #ddd;
+}
+div.tabs > div > label {
+    padding: 2px 15px;
+    cursor: inherit;
+}
+
+div.tabs > div > button.close {
+    background: url(close-icon.gif) no-repeat;
+    background-size: 10px 10px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    border: none;
+    text-align: center;
+    font-size: 8px;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+div.views {
+    position: absolute;
+    top: 22px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+div.views > div {
+    position: absolute; 
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid #ddd;
+    overflow: auto;
+}
+
+.CodeMirror {
+    height: auto;
+}
+.CodeMirror-scroll {
+    margin-right: 0;
+}
+.contextmenu {
+    position: fixed;
+    padding: 3px 15px;
+    border: 1px solid #ddd;
+    background: #f2f2f2;
+    z-index: 10;
+    border-radius: 10px;
+    font-family: helvetica;
+    font-size: 11pt;
+    font-weight: 400;
+    box-shadow: 0px 5px 20px -5px rgba(0, 0, 0, 0.4);
+}
+.contextmenu label {
+    display: block;
+}
+
+button.red {
+    border-color: #9e0b0f;
+    background: #e41d24;
+    background: -moz-linear-gradient(top, #fb4e55 0%, #d7020a 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fb4e55), color-stop(100%,#d7020a));
+    background: -webkit-linear-gradient(top, #fb4e55 0%,#d7020a 100%);
+    background: -o-linear-gradient(top, #fb4e55 0%,#d7020a 100%);
+    background: -ms-linear-gradient(top, #fb4e55 0%,#d7020a 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fb4e55', endColorstr='#d7020a',GradientType=0 );
+    background: linear-gradient(top, #fb4e55 0%,#d7020a 100%);
+    color: #FFFFFF !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+button.blue {
+    border-color: #0076a3;
+    background: #49b3fc;
+    background: -moz-linear-gradient(top, #76c7ff 0%, #1da0fa 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#76c7ff), color-stop(100%,#1da0fa));
+    background: -webkit-linear-gradient(top, #76c7ff 0%,#1da0fa 100%);
+    background: -o-linear-gradient(top, #76c7ff 0%,#1da0fa 100%);
+    background: -ms-linear-gradient(top, #76c7ff 0%,#1da0fa 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#76c7ff', endColorstr='#1da0fa',GradientType=0 );
+    background: linear-gradient(top, #76c7ff 0%,#1da0fa 100%);
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.1);
+}
+button.blue:hover { background: #76c7ff; }
+button.red:hover { background: #fb4e55; }
+button {
+    outline: medium none;
+    border: 1px solid #AAAAAA;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 -1px 0 rgba(255, 255, 255, 0.3) inset;
+    display: inline-block;
+    text-decoration: none !important;
+    vertical-align: middle;
+    font-weight: 300;
+    padding: 5px 10px;
+}
