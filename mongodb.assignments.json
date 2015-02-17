@@ -1,0 +1,4 @@
+{ "_id" : { "$oid" : "54de20409908a5f83bc6acf0" }, "title" : "Resources", "grade" : "administrator", "points" : 10, "hierarchy" : "{\"index.html\":\"text/html\",\"style.css\":\"text/css\",\"html.html\":\"text/html\",\"css.html\":\"text/html\",\"js.html\":\"text/html\"}", "__v" : 0 }
+{ "_id" : { "$oid" : "54de2de0e1547ded3cf274da" }, "title" : "MySite", "grade" : "6", "points" : 10, "hierarchy" : "{\"index.html\":\"text/html\",\"style.css\":\"text/css\"}", "__v" : 0 }
+{ "_id" : { "$oid" : "54de2de0e1547ded3cf274ee" }, "title" : "MySite", "grade" : "8", "points" : 10, "hierarchy" : "{\"index.html\":\"text/html\",\"style.css\":\"text/css\"}", "__v" : 0 }
+{ "_id" : { "$oid" : "54de5a7b34632a4b3daf3302" }, "title" : "GCD Search", "grade" : "8", "points" : 10, "hierarchy" : "{\"index.html\":\"text/html\",\"index.js\":\"text/javascript\"}", "__v" : 0 }
