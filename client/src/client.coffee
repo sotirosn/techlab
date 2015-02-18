@@ -135,7 +135,6 @@ class IDE extends Html
                     yield from @post arguments...
                 else throw exception
 
-
     @properties
         user:
             set:(@_user)-> 
@@ -176,19 +175,19 @@ class IDE extends Html
         #@navmenu.load assignments
         @status = "#{@constructor.name} loaded"
         for project in projects
-            @loadProject project
+            @loadProject @user.username, project
         
     loadProjects:(projects)->
         @hierarchy.clear()
         for project in projects
             @loadProject project
         
-    loadProject:({_id, title, hierarchy})->
+    loadProject:(username, {_id, title, hierarchy})->
         log 'h1', hierarchy
         try hierarchy = JSON.parse hierarchy
         catch exception then hierarchy = {}
         log 'h', typeof hierarchy
         
-        @hierarchy.append new Project _id, title, hierarchy, "/view/#{_id}/index.html"
+        @hierarchy.append new Project _id, title, hierarchy, "/~#{username}/#{title}/index.html"
 
 module.exports = {IDE, Login, Logout, Project, Directory, File}

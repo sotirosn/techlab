@@ -1,7 +1,7 @@
 Module.register('modules/html', function(module) {var require = module.require, log = module.log; var $, $$, Html, start,
-  __slice = [].slice,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+  slice = [].slice,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 start = require('routine').start;
 
@@ -54,11 +54,11 @@ Html = (function() {
   };
 
   function Html(element) {
-    var Type, key, querystring, value, _ref;
+    var Type, key, querystring, ref, value;
     this.element = element || this.element;
-    _ref = this.map;
-    for (key in _ref) {
-      value = _ref[key];
+    ref = this.map;
+    for (key in ref) {
+      value = ref[key];
       this[key] = value instanceof Array ? (log(this.element), log((Type = value[0], querystring = value[1], value)), log(this.element.querySelector(querystring)), new Type(this.element.querySelector(querystring))) : this.element.querySelector(value);
     }
   }
@@ -69,13 +69,13 @@ Html = (function() {
 
   Html.prototype.insert = function() {
     var children;
-    children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    children = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     return this.element.insertBefore(Html.html.apply(Html, children), this.element.firstChild);
   };
 
   Html.prototype.append = function() {
     var children;
-    children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    children = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     return this.element.appendChild(Html.html.apply(Html, children));
   };
 
@@ -93,7 +93,7 @@ Html = (function() {
 
   Html.prototype.close = function*() {
     delete this.tab;
-    return ;
+    return;
   };
 
   div = document.createElement('div');
@@ -109,11 +109,11 @@ Html = (function() {
   };
 
   Html.html = function() {
-    var child, children, fragment, _i, _len;
-    children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    var child, children, fragment, j, len;
+    children = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     fragment = document.createDocumentFragment();
-    for (_i = 0, _len = children.length; _i < _len; _i++) {
-      child = children[_i];
+    for (j = 0, len = children.length; j < len; j++) {
+      child = children[j];
       fragment.appendChild((function() {
         if (child.element instanceof Node) {
           return child.element;
@@ -130,10 +130,10 @@ Html = (function() {
   };
 
   Html.create = function() {
-    var attributes, children, element, key, tagname, value, _ref;
-    tagname = arguments[0], children = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    var attributes, children, element, key, ref, tagname, value;
+    tagname = arguments[0], children = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     element = document.createElement(tagname);
-    attributes = ((_ref = children[0]) != null ? _ref.constructor : void 0) === Object ? children.splice(0, 1)[0] : {};
+    attributes = ((ref = children[0]) != null ? ref.constructor : void 0) === Object ? children.splice(0, 1)[0] : {};
     for (key in attributes) {
       value = attributes[key];
       element.setAttribute(key, value);
@@ -146,11 +146,11 @@ Html = (function() {
 
 })();
 
-Html.ContextMenu = (function(_super) {
-  __extends(ContextMenu, _super);
+Html.ContextMenu = (function(superClass) {
+  extend(ContextMenu, superClass);
 
   ContextMenu.define = function(menuItems) {
-    var key, label, routine, _ref;
+    var key, label, ref, routine;
     this.prototype.menuItems = menuItems;
     this.prototype.element = this.create('div', {
       "class": 'contextmenu',
@@ -159,7 +159,7 @@ Html.ContextMenu = (function(_super) {
     this.prototype.map = {};
     this.i = 1;
     for (key in menuItems) {
-      _ref = menuItems[key], label = _ref[0], routine = _ref[1];
+      ref = menuItems[key], label = ref[0], routine = ref[1];
       log('context', key, label);
       this.prototype.element.appendChild(this.create('label', label));
       this.prototype.map[key] = "label:nth-of-type(" + (this.i++) + ")";
@@ -170,25 +170,25 @@ Html.ContextMenu = (function(_super) {
   };
 
   ContextMenu.extend = function(menuItems) {
-    var key, label, routine, _ref, _results;
+    var key, label, ref, results, routine;
     this.prototype.element = this.prototype.clone;
     this.prototype.menuItems = Object.clone(this.prototype.menuItems);
     this.prototype.map = Object.clone(this.prototype.map);
-    _results = [];
+    results = [];
     for (key in menuItems) {
-      _ref = menuItems[key], label = _ref[0], routine = _ref[1];
+      ref = menuItems[key], label = ref[0], routine = ref[1];
       this.prototype.element.appendChild(this.create('label', label));
       this.prototype.map[key] = "label:nth-of-type(" + (this.i++) + ")";
-      _results.push(this.prototype.menuItems[key] = [label, routine]);
+      results.push(this.prototype.menuItems[key] = [label, routine]);
     }
-    return _results;
+    return results;
   };
 
   function ContextMenu() {
-    var key, label, _fn, _ref, _ref1, _routine;
+    var _routine, fn, key, label, ref, ref1;
     ContextMenu.__super__.constructor.call(this, this.clone);
-    _ref = this.menuItems;
-    _fn = (function(_this) {
+    ref = this.menuItems;
+    fn = (function(_this) {
       return function(routine) {
         return _this[key].onclick = _this.onclick(function*() {
           this.hide();
@@ -196,15 +196,15 @@ Html.ContextMenu = (function(_super) {
         });
       };
     })(this);
-    for (key in _ref) {
-      _ref1 = _ref[key], label = _ref1[0], _routine = _ref1[1];
-      _fn(_routine);
+    for (key in ref) {
+      ref1 = ref[key], label = ref1[0], _routine = ref1[1];
+      fn(_routine);
     }
     document.body.appendChild(this.element);
   }
 
-  ContextMenu.prototype.display = function(event, _at_target) {
-    this.target = _at_target;
+  ContextMenu.prototype.display = function(event, target) {
+    this.target = target;
     this.element.style.left = event.clientX || event.x;
     this.element.style.top = event.clientY || event.y;
     this.show();
@@ -217,15 +217,15 @@ Html.ContextMenu = (function(_super) {
 
 })(Html);
 
-Html.List = (function(_super) {
-  __extends(List, _super);
+Html.List = (function(superClass) {
+  extend(List, superClass);
 
   function List() {
     return List.__super__.constructor.apply(this, arguments);
   }
 
-  List.prototype.Element = (function(_super1) {
-    __extends(Element, _super1);
+  List.prototype.Element = (function(superClass1) {
+    extend(Element, superClass1);
 
     Element.prototype.element = Element.create('li');
 
@@ -245,14 +245,14 @@ Html.List = (function(_super) {
   };
 
   List.prototype.load = function(datas) {
-    var data, _i, _len, _results;
+    var data, j, len, results;
     this.content.clear();
-    _results = [];
-    for (_i = 0, _len = datas.length; _i < _len; _i++) {
-      data = datas[_i];
-      _results.push(this.add(data));
+    results = [];
+    for (j = 0, len = datas.length; j < len; j++) {
+      data = datas[j];
+      results.push(this.add(data));
     }
-    return _results;
+    return results;
   };
 
   List.prototype.add = function(data) {
@@ -263,8 +263,8 @@ Html.List = (function(_super) {
 
 })(Html);
 
-Html.Table = (function(_super) {
-  __extends(Table, _super);
+Html.Table = (function(superClass) {
+  extend(Table, superClass);
 
   Table.define = function(fields) {
     var container, i, key, map, trbody, trhead, value;
@@ -289,8 +289,8 @@ Html.Table = (function(_super) {
     }
     this.prototype.trhead = trhead;
     container = this;
-    return this.prototype.Element = (function(_super1) {
-      __extends(Element, _super1);
+    return this.prototype.Element = (function(superClass1) {
+      extend(Element, superClass1);
 
       Element.prototype.element = trbody;
 
@@ -330,14 +330,14 @@ Html.Table = (function(_super) {
   };
 
   Table.prototype.update = function() {
-    var element, _i, _len, _ref, _results;
-    _ref = this.modified;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      element = _ref[_i];
-      _results.push(element.modified = false);
+    var element, j, len, ref, results;
+    ref = this.modified;
+    results = [];
+    for (j = 0, len = ref.length; j < len; j++) {
+      element = ref[j];
+      results.push(element.modified = false);
     }
-    return _results;
+    return results;
   };
 
   Table.prototype.modify = function(element) {
@@ -357,36 +357,36 @@ Html.Table = (function(_super) {
 
 })(Html.List);
 
-Html.View = (function(_super) {
-  __extends(View, _super);
+Html.View = (function(superClass) {
+  extend(View, superClass);
 
   function View() {
     return View.__super__.constructor.apply(this, arguments);
   }
 
   View.define = function(fields) {
-    var input, key, name, _ref, _results;
+    var input, key, name, ref, results;
     this.prototype.fields = fields;
     this.prototype.element = this.create('div', {
       "class": 'view'
     });
     this.prototype.map = {};
-    _results = [];
+    results = [];
     for (key in fields) {
-      _ref = fields[key], name = _ref[0], input = _ref[1];
+      ref = fields[key], name = ref[0], input = ref[1];
       element.appendChild(this.html('<label>#{name}</label>', input, '<br/>'));
-      _results.push(map[key] = Html.$("[name=" + name + "]"));
+      results.push(map[key] = Html.$("[name=" + name + "]"));
     }
-    return _results;
+    return results;
   };
 
   View.prototype.load = function(data) {
-    var key, _results;
-    _results = [];
+    var key, results;
+    results = [];
     for (key in this.fields) {
-      _results.push(this[key].value = data[key]);
+      results.push(this[key].value = data[key]);
     }
-    return _results;
+    return results;
   };
 
   return View;

@@ -1,24 +1,24 @@
-Module.register('index', function(module) {var require = module.require, log = module.log; var $, ClientIDE, Directory, Html, IDE, WaitAll, http, ide, start, _ref, _ref1, _ref2,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+Module.register('index', function(module) {var require = module.require, log = module.log; var $, ClientIDE, Directory, Html, IDE, WaitAll, http, ide, ref, ref1, ref2, start,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-_ref = require('html'), Html = _ref.Html, $ = _ref.$;
+ref = require('html'), Html = ref.Html, $ = ref.$;
 
-_ref1 = require('routine'), start = _ref1.start, WaitAll = _ref1.WaitAll;
+ref1 = require('routine'), start = ref1.start, WaitAll = ref1.WaitAll;
 
-_ref2 = require('./client'), IDE = _ref2.IDE, Directory = _ref2.Directory;
+ref2 = require('./client'), IDE = ref2.IDE, Directory = ref2.Directory;
 
 http = require('./http');
 
-ClientIDE = (function(_super) {
-  __extends(ClientIDE, _super);
+ClientIDE = (function(superClass) {
+  extend(ClientIDE, superClass);
 
   function ClientIDE() {
     return ClientIDE.__super__.constructor.apply(this, arguments);
   }
 
-  ClientIDE.Menu = (function(_super1) {
-    __extends(Menu, _super1);
+  ClientIDE.Menu = (function(superClass1) {
+    extend(Menu, superClass1);
 
     function Menu() {
       return Menu.__super__.constructor.apply(this, arguments);
@@ -28,12 +28,12 @@ ClientIDE = (function(_super) {
       "class": 'navmenu'
     }, '<h3>Assignments</h3><ul></ul>');
 
-    Menu.prototype.Element = (function(_super2) {
-      __extends(Element, _super2);
+    Menu.prototype.Element = (function(superClass2) {
+      extend(Element, superClass2);
 
-      function Element(_arg) {
-        var title, _id;
-        title = _arg.title, _id = _arg._id;
+      function Element(arg) {
+        var _id, title;
+        title = arg.title, _id = arg._id;
         Element.__super__.constructor.call(this, title);
         this.element.onclick = this.onclick(function*() {
           this.ide.hierarchy.clear();

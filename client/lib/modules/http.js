@@ -1,24 +1,24 @@
 Module.register('modules/http', function(module) {var require = module.require, log = module.log; var Http,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Http = (function() {
-  Http.Error = (function(_super) {
-    __extends(Error, _super);
+  Http.Error = (function(superClass) {
+    extend(Error, superClass);
 
     Error.prototype.name = 'HttpError';
 
-    function Error(_at_status, _at_message) {
-      this.status = _at_status;
-      this.message = _at_message;
+    function Error(status, message) {
+      this.status = status;
+      this.message = message;
     }
 
     return Error;
 
   })(Error);
 
-  function Http(_at_url) {
-    this.url = _at_url;
+  function Http(url) {
+    this.url = url;
   }
 
   Http.prototype.post = function*(path, data) {

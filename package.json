@@ -7,7 +7,8 @@
     "codemirror": "^4.12.0",
     "coffee-script": "git://github.com/jashkenas/coffee-script",
     "express": "^4.11.1",
-    "mongoose": "^3.8.22"
+    "mongoose": "^3.8.22",
+    "uuid": "^2.0.1"
   },
   "devDependencies": {}
 }

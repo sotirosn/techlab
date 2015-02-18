@@ -1,4 +1,4 @@
-Module.register('modules/routine', function(module) {var require = module.require, log = module.log; var WaitAll, sleep, start, _callback;
+Module.register('modules/routine', function(module) {var require = module.require, log = module.log; var WaitAll, _callback, sleep, start;
 
 _callback = function(error, data) {
   if (error) {
@@ -10,12 +10,12 @@ _callback = function(error, data) {
 };
 
 start = function(routine, callback, error, data) {
-  var done, exception, value, _ref;
+  var done, exception, ref, value;
   if (callback == null) {
     callback = _callback;
   }
   try {
-    _ref = error ? routine["throw"](error) : routine.next(data), done = _ref.done, value = _ref.value;
+    ref = error ? routine["throw"](error) : routine.next(data), done = ref.done, value = ref.value;
     if (!done) {
       return value(function(error, data) {
         return start(routine, callback, error, data);
@@ -41,17 +41,17 @@ WaitAll = (function() {
   };
 
   WaitAll.prototype.all = function(callback) {
-    var count, errors, results, routine, _i, _len, _ref, _results;
+    var count, errors, i, len, ref, results, results1, routine;
     if (!(count = this.routines.length)) {
       callback(null);
     }
     errors = [];
     results = [];
-    _ref = this.routines;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      routine = _ref[_i];
-      _results.push(start(routine, function(error, data) {
+    ref = this.routines;
+    results1 = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      routine = ref[i];
+      results1.push(start(routine, function(error, data) {
         if (error) {
           errors.push(error);
         }
@@ -63,7 +63,7 @@ WaitAll = (function() {
         }
       }));
     }
-    return _results;
+    return results1;
   };
 
   return WaitAll;
@@ -82,17 +82,17 @@ WaitAll.Map = (function() {
   };
 
   Map.prototype.all = function(callback) {
-    var count, errors, results, routine, _key, _ref, _results;
+    var _key, count, errors, ref, results, results1, routine;
     if (!(count = Object.keys(this.routines).length)) {
       callback(null);
     }
     errors = {};
     results = {};
-    _ref = this.routines;
-    _results = [];
-    for (_key in _ref) {
-      routine = _ref[_key];
-      _results.push((function(key) {
+    ref = this.routines;
+    results1 = [];
+    for (_key in ref) {
+      routine = ref[_key];
+      results1.push((function(key) {
         return start(routine, function(error, data) {
           if (error) {
             errors[key] = error;
@@ -104,7 +104,7 @@ WaitAll.Map = (function() {
         });
       })(_key));
     }
-    return _results;
+    return results1;
   };
 
   return Map;

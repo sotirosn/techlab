@@ -1,13 +1,13 @@
 Module.register('admin/edittable', function(module) {var require = module.require, log = module.log; var EditTable, Html, http,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Html = require('html').Html;
 
 http = require('../http');
 
-EditTable = (function(_super) {
-  __extends(EditTable, _super);
+EditTable = (function(superClass) {
+  extend(EditTable, superClass);
 
   EditTable.prototype.element = EditTable.html('<a>create</a> | <a>save</a> | <a>revert</a><br/><table><thead></thead><tbody></tbody></table><div></div>');
 
@@ -32,8 +32,8 @@ EditTable = (function(_super) {
       element.appendChild(this.create('td', '<input type="text"/>'));
       map[key] = "td:nth-of-type(" + (i++) + ") input";
     }
-    return this.prototype.Row = (function(_super1) {
-      __extends(Row, _super1);
+    return this.prototype.Row = (function(superClass1) {
+      extend(Row, superClass1);
 
       function Row() {
         return Row.__super__.constructor.apply(this, arguments);
@@ -56,8 +56,8 @@ EditTable = (function(_super) {
     })(this.Row);
   };
 
-  EditTable.ContextMenu = (function(_super1) {
-    __extends(ContextMenu, _super1);
+  EditTable.ContextMenu = (function(superClass1) {
+    extend(ContextMenu, superClass1);
 
     function ContextMenu() {
       return ContextMenu.__super__.constructor.apply(this, arguments);
@@ -76,8 +76,8 @@ EditTable = (function(_super) {
 
   })(Html.ContextMenu);
 
-  EditTable.Row = (function(_super1) {
-    __extends(Row, _super1);
+  EditTable.Row = (function(superClass1) {
+    extend(Row, superClass1);
 
     Row.prototype.modifies = [];
 
@@ -104,13 +104,13 @@ EditTable = (function(_super) {
       },
       value: {
         get: function() {
-          var key, results, value, _ref;
+          var key, ref, results, value;
           results = {
             _id: this.data._id
           };
-          _ref = this.fields;
-          for (key in _ref) {
-            value = _ref[key];
+          ref = this.fields;
+          for (key in ref) {
+            value = ref[key];
             results[key] = this[key].value;
           }
           return results;
@@ -118,8 +118,8 @@ EditTable = (function(_super) {
       }
     });
 
-    function Row(_at_data) {
-      this.data = _at_data;
+    function Row(data) {
+      this.data = data;
       Row.__super__.constructor.call(this, this.clone);
       if (this.data) {
         this.revert();
@@ -175,10 +175,10 @@ EditTable = (function(_super) {
     })(this);
     this.savelink.onclick = this.onclick(this.save);
     this.revertlink.onclick = this.onclick(function() {
-      var row, _i, _len, _ref;
-      _ref = this.modifies;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        row = _ref[_i];
+      var j, len, ref, row;
+      ref = this.modifies;
+      for (j = 0, len = ref.length; j < len; j++) {
+        row = ref[j];
         row.revert();
       }
       return this.modifies.length = 0;
@@ -186,14 +186,14 @@ EditTable = (function(_super) {
   }
 
   EditTable.prototype.save = function*() {
-    var key, updated, value, _i, _len, _ref;
+    var j, key, len, ref, updated, value;
     if (!this.modifies.length) {
       return;
     }
-    _ref = (yield* http.post(this.url + "/update", this.modifies.map(function(row) {
+    ref = (yield* http.post(this.url + "/update", this.modifies.map(function(row) {
       return row.value;
-    }))), this.ide.status = _ref[0], updated = _ref[1];
-    for (key = _i = 0, _len = updated.length; _i < _len; key = ++_i) {
+    }))), this.ide.status = ref[0], updated = ref[1];
+    for (key = j = 0, len = updated.length; j < len; key = ++j) {
       value = updated[key];
       this.modifies[key].updated(value);
     }
@@ -201,16 +201,16 @@ EditTable = (function(_super) {
   };
 
   EditTable.prototype.load = function*() {
-    var row, _i, _len, _ref, _results;
+    var j, len, ref, results1, row;
     this.body.clear();
-    _ref = (yield* http.post(this.url + "/list"));
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      row = _ref[_i];
+    ref = (yield* http.post(this.url + "/list"));
+    results1 = [];
+    for (j = 0, len = ref.length; j < len; j++) {
+      row = ref[j];
       log('adding row', row);
-      _results.push(this.body.append(new this.Row(row)));
+      results1.push(this.body.append(new this.Row(row)));
     }
-    return _results;
+    return results1;
   };
 
   EditTable.prototype.close = function*() {

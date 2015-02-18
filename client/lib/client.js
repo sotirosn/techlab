@@ -1,6 +1,6 @@
 Module.register('client', function(module) {var require = module.require, log = module.log; var Directory, Editor, File, Html, IDE, Login, Logout, Project, TabView, http, start,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Html = require('html').Html;
 
@@ -12,8 +12,8 @@ http = require('./http');
 
 start = require('routine').start;
 
-Login = (function(_super) {
-  __extends(Login, _super);
+Login = (function(superClass) {
+  extend(Login, superClass);
 
   Login.prototype.element = Login.create('div', {
     id: 'signin',
@@ -71,8 +71,8 @@ Login = (function(_super) {
 
 })(Html);
 
-Logout = (function(_super) {
-  __extends(Logout, _super);
+Logout = (function(superClass) {
+  extend(Logout, superClass);
 
   Logout.prototype.element = Logout.create('a', {
     "class": 'logout'
@@ -90,8 +90,8 @@ Logout = (function(_super) {
 
 })(Html);
 
-File = (function(_super) {
-  __extends(File, _super);
+File = (function(superClass) {
+  extend(File, superClass);
 
   File.prototype.element = File.create('file', '<label></label>');
 
@@ -107,13 +107,13 @@ File = (function(_super) {
     }
   });
 
-  function File(_at__id, _at_parent, _at_name, _at_mime) {
-    var _ref;
-    this._id = _at__id;
-    this.parent = _at_parent;
-    this.name = _at_name;
-    this.mime = _at_mime;
-    _ref = this.mime.split('/'), this.type = _ref[0], this.extension = _ref[1];
+  function File(_id1, parent, name1, mime) {
+    var ref;
+    this._id = _id1;
+    this.parent = parent;
+    this.name = name1;
+    this.mime = mime;
+    ref = this.mime.split('/'), this.type = ref[0], this.extension = ref[1];
     File.__super__.constructor.call(this, this.clone);
     this.label.innerHTML = this.name;
     this.element.setAttribute('mime', this.mime);
@@ -143,8 +143,8 @@ File = (function(_super) {
 
 })(Html);
 
-Directory = (function(_super) {
-  __extends(Directory, _super);
+Directory = (function(superClass) {
+  extend(Directory, superClass);
 
   Directory.prototype.element = Directory.html('<directory><label></label><div></div></directory>');
 
@@ -161,11 +161,11 @@ Directory = (function(_super) {
     }
   });
 
-  function Directory(_at__id, _at_parent, _at_name, hierarchy) {
+  function Directory(_id1, parent, name1, hierarchy) {
     var key, value;
-    this._id = _at__id;
-    this.parent = _at_parent;
-    this.name = _at_name;
+    this._id = _id1;
+    this.parent = parent;
+    this.name = name1;
     Directory.__super__.constructor.call(this, this.clone);
     this.label.innerHTML = this.name;
     for (key in hierarchy) {
@@ -187,8 +187,8 @@ Directory = (function(_super) {
 
 })(Html);
 
-Project = (function(_super) {
-  __extends(Project, _super);
+Project = (function(superClass) {
+  extend(Project, superClass);
 
   Project.properties({
     path: {
@@ -226,8 +226,8 @@ Project = (function(_super) {
 
 })(Directory);
 
-IDE = (function(_super) {
-  __extends(IDE, _super);
+IDE = (function(superClass) {
+  extend(IDE, superClass);
 
   IDE.prototype.editors = {
     text: Editor
@@ -256,8 +256,8 @@ IDE = (function(_super) {
 
   IDE.properties({
     user: {
-      set: function(_at__user) {
-        this._user = _at__user;
+      set: function(_user) {
+        this._user = _user;
         this.profile.show();
         return this.welcome.innerHTML = this._user.firstname + " " + this._user.lastname;
       },
@@ -298,32 +298,32 @@ IDE = (function(_super) {
   };
 
   IDE.prototype.load = function*() {
-    var project, projects, _i, _len, _ref, _results;
-    _ref = (yield* http.post('')), this.user = _ref.user, projects = _ref.projects;
+    var i, len, project, projects, ref, results;
+    ref = (yield* http.post('')), this.user = ref.user, projects = ref.projects;
     this.logout.show();
     this.status = this.constructor.name + " loaded";
-    _results = [];
-    for (_i = 0, _len = projects.length; _i < _len; _i++) {
-      project = projects[_i];
-      _results.push(this.loadProject(project));
+    results = [];
+    for (i = 0, len = projects.length; i < len; i++) {
+      project = projects[i];
+      results.push(this.loadProject(this.user.username, project));
     }
-    return _results;
+    return results;
   };
 
   IDE.prototype.loadProjects = function(projects) {
-    var project, _i, _len, _results;
+    var i, len, project, results;
     this.hierarchy.clear();
-    _results = [];
-    for (_i = 0, _len = projects.length; _i < _len; _i++) {
-      project = projects[_i];
-      _results.push(this.loadProject(project));
+    results = [];
+    for (i = 0, len = projects.length; i < len; i++) {
+      project = projects[i];
+      results.push(this.loadProject(project));
     }
-    return _results;
+    return results;
   };
 
-  IDE.prototype.loadProject = function(_arg) {
-    var exception, hierarchy, title, _id;
-    _id = _arg._id, title = _arg.title, hierarchy = _arg.hierarchy;
+  IDE.prototype.loadProject = function(username, arg) {
+    var _id, exception, hierarchy, title;
+    _id = arg._id, title = arg.title, hierarchy = arg.hierarchy;
     log('h1', hierarchy);
     try {
       hierarchy = JSON.parse(hierarchy);
@@ -332,7 +332,7 @@ IDE = (function(_super) {
       hierarchy = {};
     }
     log('h', typeof hierarchy);
-    return this.hierarchy.append(new Project(_id, title, hierarchy, "/view/" + _id + "/index.html"));
+    return this.hierarchy.append(new Project(_id, title, hierarchy, "/~" + username + "/" + title + "/index.html"));
   };
 
   return IDE;

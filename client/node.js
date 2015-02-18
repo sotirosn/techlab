@@ -1,14 +1,14 @@
 var Directory, Module, log,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty,
-  __slice = [].slice;
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty,
+  slice = [].slice;
 
 log = console.log.bind(console, 'Module:');
 
 Directory = (function() {
-  function Directory(_at_parent, _at_path) {
-    this.parent = _at_parent;
-    this.path = _at_path;
+  function Directory(parent, path1) {
+    this.parent = parent;
+    this.path = path1;
     this.contents = {};
   }
 
@@ -17,13 +17,13 @@ Directory = (function() {
 })();
 
 Module = (function() {
-  Module.Error = (function(_super) {
-    __extends(Error, _super);
+  Module.Error = (function(superClass) {
+    extend(Error, superClass);
 
     Error.prototype.name = 'ModuleError';
 
-    function Error(_at_message) {
-      this.message = _at_message;
+    function Error(message) {
+      this.message = message;
     }
 
     return Error;
@@ -35,14 +35,14 @@ Module = (function() {
   Module.modules = Module.directory.contents.modules = new Directory(void 0, '/');
 
   Module.register = function(path, callback) {
-    var directory, dirname, dirpath, modulename, _i, _j, _len, _ref;
-    _ref = path.split('/'), dirpath = 2 <= _ref.length ? __slice.call(_ref, 0, _i = _ref.length - 1) : (_i = 0, []), modulename = _ref[_i++];
+    var directory, dirname, dirpath, i, j, len, modulename, ref;
+    ref = path.split('/'), dirpath = 2 <= ref.length ? slice.call(ref, 0, i = ref.length - 1) : (i = 0, []), modulename = ref[i++];
     directory = this.directory;
     if (!(directory instanceof Directory)) {
       throw new Module.Error("bad module path dir: " + path);
     }
-    for (_j = 0, _len = dirpath.length; _j < _len; _j++) {
-      dirname = dirpath[_j];
+    for (j = 0, len = dirpath.length; j < len; j++) {
+      dirname = dirpath[j];
       directory = directory.contents[dirname] || (directory.contents[dirname] = new Directory(directory, dirpath));
       if (!(directory instanceof Directory)) {
         throw new Module.Error("bad module path dir: " + path);
@@ -52,8 +52,8 @@ Module = (function() {
   };
 
   Module.require = function(path) {
-    var directory, dirname, dirpath, module, modulename, _i, _j, _len, _ref;
-    _ref = path.split('/'), dirpath = 2 <= _ref.length ? __slice.call(_ref, 0, _i = _ref.length - 1) : (_i = 0, []), modulename = _ref[_i++];
+    var directory, dirname, dirpath, i, j, len, module, modulename, ref;
+    ref = path.split('/'), dirpath = 2 <= ref.length ? slice.call(ref, 0, i = ref.length - 1) : (i = 0, []), modulename = ref[i++];
     directory = (function() {
       switch (dirpath[0]) {
         case '.':
@@ -64,8 +64,8 @@ Module = (function() {
           return Module.modules;
       }
     }).call(this);
-    for (_j = 0, _len = dirpath.length; _j < _len; _j++) {
-      dirname = dirpath[_j];
+    for (j = 0, len = dirpath.length; j < len; j++) {
+      dirname = dirpath[j];
       if (dirname === '..') {
         directory = directory.parent;
       } else if (dirname !== '.') {
@@ -85,10 +85,10 @@ Module = (function() {
     return module.exports;
   };
 
-  function Module(_at_path, _at_directory, _at_module) {
-    this.path = _at_path;
-    this.directory = _at_directory;
-    this.module = _at_module;
+  function Module(path1, directory1, module1) {
+    this.path = path1;
+    this.directory = directory1;
+    this.module = module1;
     this.require = this.require.bind(this);
     this.log = console.log.bind(console, this.path + ":");
   }

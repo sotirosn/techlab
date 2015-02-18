@@ -1,21 +1,21 @@
-Module.register('admin/index', function(module) {var require = module.require, log = module.log; var AdminIDE, AssignmentList, Directory, EditTable, Html, IDE, Login, Logout, Project, TabView, UserList, WaitAll, http, ide, start, _ref, _ref1,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+Module.register('admin/index', function(module) {var require = module.require, log = module.log; var AdminIDE, AssignmentList, Directory, EditTable, Html, IDE, Login, Logout, Project, TabView, UserList, WaitAll, http, ide, ref, ref1, start,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Html = require('html').Html;
 
 EditTable = require('./edittable').EditTable;
 
-_ref = require('routine'), start = _ref.start, WaitAll = _ref.WaitAll;
+ref = require('routine'), start = ref.start, WaitAll = ref.WaitAll;
 
-_ref1 = require('../client'), IDE = _ref1.IDE, Login = _ref1.Login, Logout = _ref1.Logout, Directory = _ref1.Directory, Project = _ref1.Project;
+ref1 = require('../client'), IDE = ref1.IDE, Login = ref1.Login, Logout = ref1.Logout, Directory = ref1.Directory, Project = ref1.Project;
 
 TabView = require('../layout').TabView;
 
 http = require('../http');
 
-AssignmentList = (function(_super) {
-  __extends(AssignmentList, _super);
+AssignmentList = (function(superClass) {
+  extend(AssignmentList, superClass);
 
   function AssignmentList() {
     return AssignmentList.__super__.constructor.apply(this, arguments);
@@ -25,8 +25,8 @@ AssignmentList = (function(_super) {
 
   AssignmentList.prototype.url = 'admin/assignment';
 
-  AssignmentList.ContextMenu = (function(_super1) {
-    __extends(ContextMenu, _super1);
+  AssignmentList.ContextMenu = (function(superClass1) {
+    extend(ContextMenu, superClass1);
 
     function ContextMenu() {
       return ContextMenu.__super__.constructor.apply(this, arguments);
@@ -64,8 +64,8 @@ AssignmentList = (function(_super) {
 
 })(EditTable);
 
-UserList = (function(_super) {
-  __extends(UserList, _super);
+UserList = (function(superClass) {
+  extend(UserList, superClass);
 
   function UserList() {
     return UserList.__super__.constructor.apply(this, arguments);
@@ -75,8 +75,8 @@ UserList = (function(_super) {
 
   UserList.prototype.url = 'admin/user';
 
-  UserList.ContextMenu = (function(_super1) {
-    __extends(ContextMenu, _super1);
+  UserList.ContextMenu = (function(superClass1) {
+    extend(ContextMenu, superClass1);
 
     function ContextMenu() {
       return ContextMenu.__super__.constructor.apply(this, arguments);
@@ -114,8 +114,8 @@ UserList = (function(_super) {
 
 })(EditTable);
 
-AdminIDE = (function(_super) {
-  __extends(AdminIDE, _super);
+AdminIDE = (function(superClass) {
+  extend(AdminIDE, superClass);
 
   function AdminIDE() {
     return AdminIDE.__super__.constructor.apply(this, arguments);
@@ -125,8 +125,8 @@ AdminIDE = (function(_super) {
 
   AdminIDE.prototype.assignmentlist = new AssignmentList;
 
-  AdminIDE.Menu = (function(_super1) {
-    __extends(Menu, _super1);
+  AdminIDE.Menu = (function(superClass1) {
+    extend(Menu, superClass1);
 
     Menu.prototype.element = Menu.create('ul', '<li>Users</li><li>Assignments</li>');
 
@@ -178,35 +178,35 @@ AdminIDE = (function(_super) {
   };
 
   AdminIDE.prototype.loadUserProjects = function(user, projects) {
-    var project, _i, _len, _results;
+    var i, len, project, results;
     this.hierarchy.clear();
     this.hierarchy.append("<h4>" + user.username + "</h4>");
-    _results = [];
-    for (_i = 0, _len = projects.length; _i < _len; _i++) {
-      project = projects[_i];
-      _results.push(this.loadProject({
+    results = [];
+    for (i = 0, len = projects.length; i < len; i++) {
+      project = projects[i];
+      results.push(this.loadProject({
         _id: project._id,
         title: project.title,
         hierarchy: project.hierarchy
       }));
     }
-    return _results;
+    return results;
   };
 
   AdminIDE.prototype.loadAssignmentProjects = function(assignment, projects) {
-    var project, _i, _len, _results;
+    var i, len, project, results;
     this.hierarchy.clear();
     this.hierarchy.append("<h4>" + assignment.title + "</h4>");
-    _results = [];
-    for (_i = 0, _len = projects.length; _i < _len; _i++) {
-      project = projects[_i];
-      _results.push(this.loadProject({
+    results = [];
+    for (i = 0, len = projects.length; i < len; i++) {
+      project = projects[i];
+      results.push(this.loadProject({
         _id: project._id,
         title: project.username,
         hierarchy: assignment.hierarchy
       }));
     }
-    return _results;
+    return results;
   };
 
   return AdminIDE;

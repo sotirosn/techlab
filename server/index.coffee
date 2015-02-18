@@ -50,25 +50,34 @@ authorize = (request, isAdmin)->
 host = '172.30.0.16'
 #host = 'localhost'
 
-log config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
+log 'config:', config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
 ssl =
     key: fs.readFileSync config.keypath, encoding:'utf8'
     cert: fs.readFileSync config.certpath, encoding: 'utf8'
 
+redirect = new Server
+    ip: config.localhost
+    port: config.redirectport
+
 webserver = new Server
-    ip: host
-    port: 8080
+    ip: config.localhost
+    port: config.webport
     key: ssl.key
     cert: ssl.cert
 
 appserver = new Server
-    ip: host
-    port: 8081
+    ip: config.localhost
+    port: config.appport
     key: ssl.key
     cert: ssl.cert
 
+redirect.router
+    .get '*', (request, response)->
+        response.setHeader 'Location', webserver.url
+        response.status(301).send "This site must be accessed via https. <a href=\"#{webserver.url}\">#{webserver.url}</a>"
+
 webserver.router
-    .get '/site/:username/:title/*', (request, response, next)->
+    .get '/~:username/:title/*', (request, response, next)->
         log {username, title} = request.params
         log path = "/#{request.params[0]}"
         
@@ -249,12 +258,14 @@ appserver.router
     
 start do ->
     {wait, all} = new WaitAll.Map
+    wait 'redirect', redirect.listen()
     wait 'webserver', webserver.listen()
     wait 'appserver', appserver.listen()
     wait 'database', db.connect()
     log yield all
 
-    appserver.ip = process.env.PUBLIC_HOSTNAME
+    webserver.ip = config.hostname
+    appserver.ip = config.hostname
 
     unless (yield from User.findOne username:'administrator')?
         yield from User.insert

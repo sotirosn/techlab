@@ -1,8 +1,8 @@
-Module.register('editor', function(module) {var require = module.require, log = module.log; var Editor, Html, WaitAll, start, _ref,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+Module.register('editor', function(module) {var require = module.require, log = module.log; var Editor, Html, WaitAll, ref, start,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-_ref = require('routine'), start = _ref.start, WaitAll = _ref.WaitAll;
+ref = require('routine'), start = ref.start, WaitAll = ref.WaitAll;
 
 Html = require('html').Html;
 
@@ -15,15 +15,15 @@ Array.prototype.remove = function(element) {
   return index;
 };
 
-Editor = (function(_super) {
-  __extends(Editor, _super);
+Editor = (function(superClass) {
+  extend(Editor, superClass);
 
   Editor.saveAll = function*() {
-    var all, editor, wait, _i, _len, _ref1, _ref2;
-    _ref1 = new WaitAll, wait = _ref1.wait, all = _ref1.all;
-    _ref2 = this.prototype.editors;
-    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-      editor = _ref2[_i];
+    var all, editor, i, len, ref1, ref2, wait;
+    ref1 = new WaitAll, wait = ref1.wait, all = ref1.all;
+    ref2 = this.prototype.editors;
+    for (i = 0, len = ref2.length; i < len; i++) {
+      editor = ref2[i];
       if (editor.saving) {
         wait(editor.save());
       }
@@ -40,12 +40,12 @@ Editor = (function(_super) {
     coffee: 'coffeescript'
   };
 
-  function Editor(_at_file, data) {
-    this.file = _at_file;
+  function Editor(file, data) {
+    this.file = file;
     this.editors.push(this);
     this.editor = new CodeMirror(((function(_this) {
-      return function(_at_element) {
-        _this.element = _at_element;
+      return function(element1) {
+        _this.element = element1;
       };
     })(this)), {
       mode: this.modes[this.file.extension],
