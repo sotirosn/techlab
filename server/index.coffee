@@ -7,7 +7,7 @@ ObjectId = (require 'mongoose').Schema.Types.ObjectId
 uuid = require 'uuid'
 
 db = new Database 
-    uri: 'mongodb://localhost:27017/students'
+    uri: 'mongodb://localhost/techlab'
 
 User = Database.define 'User',
     sid: String
@@ -46,12 +46,12 @@ authorize = (request, isAdmin)->
     throw new RequestError 403, 'invalid administrator' if isAdmin and user.grade != 'administrator'
     user
 
-#host = '10.1.10.126'
-host = 'localhost'
+host = '172.30.0.16'
+#host = 'localhost'
 
 webserver = new Server
     ip: host
-    port: 8000
+    port: 8080
 
 appserver = new Server
     ip: host
@@ -69,7 +69,7 @@ webserver.router
                 project = yield from Project.findOne {user_id:user._id, assignment_id:assignment._id}
                 file = yield from File.findOne {project_id:project._id, path}
                 return if file
-                    response.setHeader 'Content-Type', file.type
+                    response.setHeader 'Content-Type', 'text/html' #file.meta
                     response.send file.data
             catch exception then return next exception unless exception instanceof TypeError
             response.sendFile resolve 'client', '404.html'
@@ -100,7 +100,7 @@ webserver.router
         start do ->
             file = yield from File.findOne {project_id, path}
             return response.status(404).send '<h1 style="font-weight:normal">File not found.</h1>' unless file
-            response.setHeader 'Content-Type', file.meta
+            response.setHeader 'Content-Type', 'text/html' #file.meta
             response.send file.data
 
     .get '/*', (request, response)->
@@ -243,6 +243,8 @@ start do ->
     wait 'appserver', appserver.listen()
     wait 'database', db.connect()
     log yield all
+
+    appserver.ip = process.env.PUBLIC_HOSTNAME
 
     unless (yield from User.findOne username:'administrator')?
         yield from User.insert
