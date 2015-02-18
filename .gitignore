@@ -1,2 +1,8 @@
-.nide
+.nide/
 mongodb/
+node_modules/
+server/node_modules/
+client/node_modules/
+cert.key
+cert.crt
+config.json

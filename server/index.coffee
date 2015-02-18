@@ -5,6 +5,7 @@ log = (require './log') __filename
 ObjectId = (require 'mongoose').Schema.Types.ObjectId
 {resolve} = require 'path'
 uuid = require 'uuid'
+fs = require 'fs'
 
 db = new Database 
     uri: 'mongodb://localhost/techlab'
@@ -49,13 +50,22 @@ authorize = (request, isAdmin)->
 host = '172.30.0.16'
 #host = 'localhost'
 
+log config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
+ssl =
+    key: fs.readFileSync config.keypath, encoding:'utf8'
+    cert: fs.readFileSync config.certpath, encoding: 'utf8'
+
 webserver = new Server
     ip: host
     port: 8080
+    key: ssl.key
+    cert: ssl.cert
 
 appserver = new Server
     ip: host
     port: 8081
+    key: ssl.key
+    cert: ssl.cert
 
 webserver.router
     .get '/site/:username/:title/*', (request, response, next)->

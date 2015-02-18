@@ -78,7 +78,7 @@ class Server
         @port ?= 80
         @router = express()
         if cert && key
-            @server = https.createServer @router, {cert, key} 
+            @server = https.createServer {cert, key}, @router 
             @proto = 'https'
         else
             @server = http.createServer @router
