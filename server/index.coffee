@@ -39,6 +39,28 @@ File = Database.define 'File',
     path: String
     data: String
 
+log 'config:', config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
+ssl =
+    key: fs.readFileSync config.keypath, encoding:'utf8'
+    cert: fs.readFileSync config.certpath, encoding: 'utf8'
+
+webserver = new Server
+    host: config.host
+    port: config.webport
+
+clientserver = new Server
+    host: config.host
+    port: config.clientport
+    key: ssl.key
+    cert: ssl.cert
+
+appserver = new Server
+    host: config.host
+    port: config.appport
+    key: ssl.key
+    cert: ssl.cert
+
+
 SID = 0
 sessions = {}
 authorize = (request, isAdmin)->
@@ -47,39 +69,18 @@ authorize = (request, isAdmin)->
     throw new RequestError 403, 'invalid administrator' if isAdmin and user.grade != 'administrator'
     user
 
-host = '172.30.0.16'
-#host = 'localhost'
-
-log 'config:', config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
-ssl =
-    key: fs.readFileSync config.keypath, encoding:'utf8'
-    cert: fs.readFileSync config.certpath, encoding: 'utf8'
-
-redirect = new Server
-    ip: config.localhost
-    port: config.redirectport
-
-webserver = new Server
-    ip: config.localhost
-    port: config.webport
-    key: ssl.key
-    cert: ssl.cert
-
-appserver = new Server
-    ip: config.localhost
-    port: config.appport
-    key: ssl.key
-    cert: ssl.cert
-
-redirect.router
-    .get '*', (request, response)->
-        response.setHeader 'Location', webserver.url
-        response.status(301).send "This site must be accessed via https. <a href=\"#{webserver.url}\">#{webserver.url}</a>"
-
 webserver.router
-    .get '/~:username/:title/*', (request, response, next)->
-        log {username, title} = request.params
-        log path = "/#{request.params[0]}"
+    .use (request, response, next)->
+        response.setHeader 'Access-Control-Allow-Origin', 'https://localhost:8080'
+        next()
+    
+    .get '/', (request, response)->
+        response.setHeader 'Location', "https://#{config.hostname}:#{clientserver.port}/"
+        response.status(301).send "This site must be accessed over a secure link, <a href=\"https://#{config.hostname}:#{clientserver.port}\">secure site</a>."
+
+    .get '/:username/:title*', (request, response, next)->
+        {username, title} = request.params
+        path = request.params[0] || "/index.html"
         
         start do ->
             try
@@ -92,13 +93,14 @@ webserver.router
                     response.send file.data
             catch exception then return next exception unless exception instanceof TypeError
             response.sendFile resolve 'client', '404.html'
-            
+
+clientserver.router            
     .get '/', (request, response)->
         response.sendFile resolve 'client', 'index.html'
         
     .get '/admin', (request, response)->
         response.sendFile resolve 'client/admin/index.html'
-    
+
     .get '/http.js', (request, response)->
         response.setHeader 'Content-Type', 'text/javascript'
         response.send "
@@ -109,22 +111,9 @@ webserver.router
                 module.log('here', module.exports.url);\n
             });"
     
-    .get '/codemirror/*', (request, response)->
-        response.sendFile resolve "#{__dirname}/node_modules/codemirror", request.params[0]
-    
-    .get '/view/:project_id/*', (request, response)->
-        log {project_id} = request.params
-        path = "/#{request.params[0]}"
-        
-        start do ->
-            file = yield from File.findOne {project_id, path}
-            return response.status(404).send '<h1 style="font-weight:normal">File not found.</h1>' unless file
-            response.setHeader 'Content-Type', 'text/html' #file.meta
-            response.send file.data
-
     .get '/*', (request, response)->
         try response.sendFile resolve 'client', request.params[0]
-        catch error then response.send 404, '<h1>Page not found.</h1>'
+        catch error then response.send 404, '<h1>Page not found</h1>'
 
 appserver.router
     .use (request, response, next)->
@@ -157,14 +146,13 @@ appserver.router
         sid = uuid.v4()
         yield from User.update {_id:user._id}, $set:{sid, lastlogin:Date.now()}
         response.cookies = {sid, path:'/'}
-        sessions[sid] = user
-        "#{username} login on #{Date.now()}"
-        
+        sessions[sid] = user       
+ 
     .post '/file/read', route (request)->
         user = authorize request
         {project_id, path} = yield from request.json
             
-        throw 'invalid project' unless user.grade == 'administrator' || yield from Project.findOne {_id:project_id, user_id:user._id}
+        #throw 'invalid project' unless user.grade == 'administrator' || yield from Project.findOne {_id:project_id, user_id:user._id}
         
         file = yield from File.findOne {project_id:project_id, path}
         file?.data || ''
@@ -231,10 +219,14 @@ appserver.router
                 yield from Assignment.update {_id}, $set:{title, grade, points, hierarchy}
             else
                 [{_id}] = yield from Assignment.insert {title, grade, points, hierarchy}
-                {wait, all} = new WaitAll
-                for user in yield from User.find {grade}
-                    wait Project.insert user_id:[user._id], assignment_id:_id
-                yield all
+                if title[0] == '$'
+                    users = yield from User.find {grade}
+                    yield from Project.insert user_id:users, assignment_id:_id
+                else
+                    {wait, all} = new WaitAll
+                    for user in yield from User.find {grade}
+                        wait Project.insert user_id:[user._id], assignment_id:_id
+                    yield all
             _id
         ["#{ids.length} assignments updated", ids]
             
@@ -258,14 +250,11 @@ appserver.router
     
 start do ->
     {wait, all} = new WaitAll.Map
-    wait 'redirect', redirect.listen()
     wait 'webserver', webserver.listen()
+    wait 'clientserver', clientserver.listen()
     wait 'appserver', appserver.listen()
     wait 'database', db.connect()
     log yield all
-
-    webserver.ip = config.hostname
-    appserver.ip = config.hostname
 
     unless (yield from User.findOne username:'administrator')?
         yield from User.insert

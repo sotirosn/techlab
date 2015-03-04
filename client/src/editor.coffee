@@ -31,7 +31,8 @@ class Editor extends Html
             extraKeys:
                 Tab: CodeMirror.commands.indentMore
                 'Shift-Tab': CodeMirror.commands.indentLess
-                
+            readOnly: @file.project.readonly                
+
         @editor.on 'change', @autosave.bind @    
     
     autosaveDelay: 30000

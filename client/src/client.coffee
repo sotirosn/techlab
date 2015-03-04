@@ -58,22 +58,23 @@ class File extends Html
     @properties
         path:get:-> "#{@parent.path}/#{@name}"
 
-    constructor:(@_id, @parent, @name, @mime)->
-        [@type, @extension] = @mime.split '/'
-        
+    constructor:(@project, @parent, @name, mime)->
         super @clone
+        [@type, @extension] = mime.split '/'
+
         @label.innerHTML = @name
-        @element.setAttribute 'mime', @mime
+        @element.setAttribute 'mime', mime
+
         @element.onclick = @onclick ->
             unless @editor
-                data = yield from http.post 'file/read', {@path, project_id:@_id}
+                data = yield from http.post 'file/read', {@path, project_id:@project._id}
                 @editor = new @ide.editors[@type] this, data
                 @editor.tab = @ide.tabview.addTab @name, @editor
             @editor.tab.focus()
 
     write:(data)->
         http.post 'file/write', {@path, project_id:@_id, data}
-        
+
 class Directory extends Html
     element: @html '<directory><label></label><div></div></directory>'
     map:
@@ -83,14 +84,14 @@ class Directory extends Html
     @properties
         path:get:-> "#{@parent.path}/#{@name}"
     
-    constructor:(@_id, @parent, @name, hierarchy)->
+    constructor:(@project, @parent, @name, hierarchy)->
         super @clone
         @label.innerHTML = @name
         for key, value of hierarchy
             if typeof value == 'object'
-                @add new Directory @_id, this, key, value
+                @add new Directory @project, this, key, value
             else
-                @add new File @_id, this, key, value
+                @add new File @project, this, key, value
     
     add:(object)->
         log 'adding', object.element
@@ -106,18 +107,34 @@ class Project extends Directory
         viewlink: 'a.viewlink'
         content: 'div'
     
-    constructor:(_id, name, hierarchy, url)->
+    readonly: false
+    
+    constructor:(@_id, name, hierarchy, url)->
         log arguments
-        super _id, undefined, name, hierarchy
-        viewwindow = undefined
+        if name[0] == '$'
+            @readonly = true
+            name = name.substr 1
+        
+        super this, undefined, name, hierarchy
+        view = undefined
         @viewlink.onclick = @onclick ->
+            yield from Editor.saveAll()
+
+            unless view
+                view = window.open url, '_blank'
+            else
+                view.close()
+                view = window.open url, '_blank'
+
+            return
             # must create window before yielding otherwise browser will block it as a pop-up
             if !viewwindow || viewwindow.closed then viewwindow = window.open url, '_blank'
             else viewwindow.focus()
             
             # if any saves are made then reload the view window
             yield from Editor.saveAll()
-            viewwindow.location.reload()
+            viewwindow.close()
+            #viewwindow.location.reload()
      
 class IDE extends Html
     editors:
@@ -180,7 +197,8 @@ class IDE extends Html
     loadProjects:(projects)->
         @hierarchy.clear()
         for project in projects
-            @loadProject project
+            log 'loading', project
+            @loadProject project.username, project
         
     loadProject:(username, {_id, title, hierarchy})->
         log 'h1', hierarchy
@@ -188,6 +206,6 @@ class IDE extends Html
         catch exception then hierarchy = {}
         log 'h', typeof hierarchy
         
-        @hierarchy.append new Project _id, title, hierarchy, "/~#{username}/#{title}/index.html"
+        @hierarchy.append new Project _id, title, hierarchy, "http:localhost:8000/#{username}/#{title}/"
 
 module.exports = {IDE, Login, Logout, Project, Directory, File}

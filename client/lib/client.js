@@ -107,22 +107,21 @@ File = (function(superClass) {
     }
   });
 
-  function File(_id1, parent, name1, mime) {
+  function File(project1, parent, name1, mime) {
     var ref;
-    this._id = _id1;
+    this.project = project1;
     this.parent = parent;
     this.name = name1;
-    this.mime = mime;
-    ref = this.mime.split('/'), this.type = ref[0], this.extension = ref[1];
     File.__super__.constructor.call(this, this.clone);
+    ref = mime.split('/'), this.type = ref[0], this.extension = ref[1];
     this.label.innerHTML = this.name;
-    this.element.setAttribute('mime', this.mime);
+    this.element.setAttribute('mime', mime);
     this.element.onclick = this.onclick(function*() {
       var data;
       if (!this.editor) {
         data = (yield* http.post('file/read', {
           path: this.path,
-          project_id: this._id
+          project_id: this.project._id
         }));
         this.editor = new this.ide.editors[this.type](this, data);
         this.editor.tab = this.ide.tabview.addTab(this.name, this.editor);
@@ -161,9 +160,9 @@ Directory = (function(superClass) {
     }
   });
 
-  function Directory(_id1, parent, name1, hierarchy) {
+  function Directory(project1, parent, name1, hierarchy) {
     var key, value;
-    this._id = _id1;
+    this.project = project1;
     this.parent = parent;
     this.name = name1;
     Directory.__super__.constructor.call(this, this.clone);
@@ -171,9 +170,9 @@ Directory = (function(superClass) {
     for (key in hierarchy) {
       value = hierarchy[key];
       if (typeof value === 'object') {
-        this.add(new Directory(this._id, this, key, value));
+        this.add(new Directory(this.project, this, key, value));
       } else {
-        this.add(new File(this._id, this, key, value));
+        this.add(new File(this.project, this, key, value));
       }
     }
   }
@@ -206,19 +205,35 @@ Project = (function(superClass) {
     content: 'div'
   };
 
-  function Project(_id, name, hierarchy, url) {
-    var viewwindow;
+  Project.prototype.readonly = false;
+
+  function Project(_id1, name, hierarchy, url) {
+    var view;
+    this._id = _id1;
     log(arguments);
-    Project.__super__.constructor.call(this, _id, void 0, name, hierarchy);
-    viewwindow = void 0;
+    if (name[0] === '$') {
+      this.readonly = true;
+      name = name.substr(1);
+    }
+    Project.__super__.constructor.call(this, this, void 0, name, hierarchy);
+    view = void 0;
     this.viewlink.onclick = this.onclick(function*() {
+      var viewwindow;
+      (yield* Editor.saveAll());
+      if (!view) {
+        view = window.open(url, '_blank');
+      } else {
+        view.close();
+        view = window.open(url, '_blank');
+      }
+      return;
       if (!viewwindow || viewwindow.closed) {
         viewwindow = window.open(url, '_blank');
       } else {
         viewwindow.focus();
       }
       (yield* Editor.saveAll());
-      return viewwindow.location.reload();
+      return viewwindow.close();
     });
   }
 
@@ -316,7 +331,8 @@ IDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject(project));
+      log('loading', project);
+      results.push(this.loadProject(project.username, project));
     }
     return results;
   };
@@ -332,7 +348,7 @@ IDE = (function(superClass) {
       hierarchy = {};
     }
     log('h', typeof hierarchy);
-    return this.hierarchy.append(new Project(_id, title, hierarchy, "/~" + username + "/" + title + "/index.html"));
+    return this.hierarchy.append(new Project(_id, title, hierarchy, "http:localhost:8000/" + username + "/" + title + "/"));
   };
 
   return IDE;

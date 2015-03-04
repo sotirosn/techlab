@@ -55,7 +55,8 @@ Editor = (function(superClass) {
       extraKeys: {
         Tab: CodeMirror.commands.indentMore,
         'Shift-Tab': CodeMirror.commands.indentLess
-      }
+      },
+      readOnly: this.file.project.readonly
     });
     this.editor.on('change', this.autosave.bind(this));
   }
