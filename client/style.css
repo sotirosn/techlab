@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
+@import url(https://fonts.googleapis.com/css?family=Droid+Sans+Mono);
 
 @font-face {
   font-family: 'Roboto';
@@ -155,7 +155,9 @@ body {
     right: 0px;
 }
 
-img.htmllink {
+img[src="html-icon.png"] {
+    background: url(html-icon.png);
+    height: 50px;
     width: 50px;
 }
 

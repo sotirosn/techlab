@@ -106,9 +106,11 @@ class Project extends Directory
         viewlink: 'a.viewlink'
         content: 'div'
     
-    constructor:(_id, name, hierarchy, url)->
-        log arguments
-        super _id, undefined, name, hierarchy
+    constructor:({_id, title, hierarchy}, url)->
+        try hierarchy = JSON.parse hierarchy
+        catch e then hierarchy = {}
+
+        super _id, undefined, title, hierarchy
         viewwindow = undefined
         @viewlink.onclick = @onclick ->
             # must create window before yielding otherwise browser will block it as a pop-up
@@ -146,7 +148,7 @@ class IDE extends Html
     
     element: @html(
         @create 'div', id:'banner',
-            '<h1>STBCS TechCloud</h1>'# <img class="htmllink" src="html-icon.png"/></h1>'
+            '<h1>STBCS TechCloud</h1> <a href="/~instructor/Resources/html.html" target="_blank"><img src="html-icon.png"/></a></h1>'
             @create 'p', {id:'profile', hidden:true},
                 'Welcome <span>Guest</span>.<br/>',
                 Logout::
@@ -175,19 +177,9 @@ class IDE extends Html
         #@navmenu.load assignments
         @status = "#{@constructor.name} loaded"
         for project in projects
-            @loadProject @user.username, project
+            @loadProject @user.username, project.title, project 
         
-    loadProjects:(projects)->
-        @hierarchy.clear()
-        for project in projects
-            @loadProject project
-        
-    loadProject:(username, {_id, title, hierarchy})->
-        log 'h1', hierarchy
-        try hierarchy = JSON.parse hierarchy
-        catch exception then hierarchy = {}
-        log 'h', typeof hierarchy
-        
-        @hierarchy.append new Project _id, title, hierarchy, "/~#{username}/#{title}/index.html"
+    loadProject:(username, title, project)->
+        @hierarchy.append new Project project, "/~#{username}/#{title}/index.html"
 
 module.exports = {IDE, Login, Logout, Project, Directory, File}

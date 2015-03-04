@@ -107,11 +107,11 @@ File = (function(superClass) {
     }
   });
 
-  function File(_id1, parent, name1, mime) {
+  function File(_id1, parent, name, mime) {
     var ref;
     this._id = _id1;
     this.parent = parent;
-    this.name = name1;
+    this.name = name;
     this.mime = mime;
     ref = this.mime.split('/'), this.type = ref[0], this.extension = ref[1];
     File.__super__.constructor.call(this, this.clone);
@@ -161,11 +161,11 @@ Directory = (function(superClass) {
     }
   });
 
-  function Directory(_id1, parent, name1, hierarchy) {
+  function Directory(_id1, parent, name, hierarchy) {
     var key, value;
     this._id = _id1;
     this.parent = parent;
-    this.name = name1;
+    this.name = name;
     Directory.__super__.constructor.call(this, this.clone);
     this.label.innerHTML = this.name;
     for (key in hierarchy) {
@@ -206,10 +206,16 @@ Project = (function(superClass) {
     content: 'div'
   };
 
-  function Project(_id, name, hierarchy, url) {
-    var viewwindow;
-    log(arguments);
-    Project.__super__.constructor.call(this, _id, void 0, name, hierarchy);
+  function Project(arg, url) {
+    var _id, e, hierarchy, title, viewwindow;
+    _id = arg._id, title = arg.title, hierarchy = arg.hierarchy;
+    try {
+      hierarchy = JSON.parse(hierarchy);
+    } catch (_error) {
+      e = _error;
+      hierarchy = {};
+    }
+    Project.__super__.constructor.call(this, _id, void 0, title, hierarchy);
     viewwindow = void 0;
     this.viewlink.onclick = this.onclick(function*() {
       if (!viewwindow || viewwindow.closed) {
@@ -274,7 +280,7 @@ IDE = (function(superClass) {
 
   IDE.prototype.element = IDE.html(IDE.create('div', {
     id: 'banner'
-  }, '<h1>STBCS TechCloud</h1>', IDE.create('p', {
+  }, '<h1>STBCS TechCloud</h1> <a href="/~instructor/Resources/html.html" target="_blank"><img src="html-icon.png"/></a></h1>', IDE.create('p', {
     id: 'profile',
     hidden: true
   }, 'Welcome <span>Guest</span>.<br/>', Logout.prototype)), IDE.create('div', {
@@ -305,34 +311,13 @@ IDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject(this.user.username, project));
+      results.push(this.loadProject(this.user.username, project.title, project));
     }
     return results;
   };
 
-  IDE.prototype.loadProjects = function(projects) {
-    var i, len, project, results;
-    this.hierarchy.clear();
-    results = [];
-    for (i = 0, len = projects.length; i < len; i++) {
-      project = projects[i];
-      results.push(this.loadProject(project));
-    }
-    return results;
-  };
-
-  IDE.prototype.loadProject = function(username, arg) {
-    var _id, exception, hierarchy, title;
-    _id = arg._id, title = arg.title, hierarchy = arg.hierarchy;
-    log('h1', hierarchy);
-    try {
-      hierarchy = JSON.parse(hierarchy);
-    } catch (_error) {
-      exception = _error;
-      hierarchy = {};
-    }
-    log('h', typeof hierarchy);
-    return this.hierarchy.append(new Project(_id, title, hierarchy, "/~" + username + "/" + title + "/index.html"));
+  IDE.prototype.loadProject = function(username, title, project) {
+    return this.hierarchy.append(new Project(project, "/~" + username + "/" + title + "/index.html"));
   };
 
   return IDE;

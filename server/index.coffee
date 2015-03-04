@@ -47,34 +47,43 @@ authorize = (request, isAdmin)->
     throw new RequestError 403, 'invalid administrator' if isAdmin and user.grade != 'administrator'
     user
 
-host = '172.30.0.16'
-#host = 'localhost'
-
-log 'config:', config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
+log 'config:\n', config = JSON.parse fs.readFileSync (process.argv[2] || 'config.json'), encoding:'utf8'
 ssl =
     key: fs.readFileSync config.keypath, encoding:'utf8'
     cert: fs.readFileSync config.certpath, encoding: 'utf8'
 
 redirect = new Server
-    ip: config.localhost
+    host: config.localhost
     port: config.redirectport
 
 webserver = new Server
-    ip: config.localhost
+    host: config.localhost
     port: config.webport
     key: ssl.key
     cert: ssl.cert
 
 appserver = new Server
-    ip: config.localhost
+    host: config.localhost
     port: config.appport
     key: ssl.key
     cert: ssl.cert
 
 redirect.router
     .get '*', (request, response)->
-        response.setHeader 'Location', webserver.url
-        response.status(301).send "This site must be accessed via https. <a href=\"#{webserver.url}\">#{webserver.url}</a>"
+        log 'redirect', request.url
+        response.setHeader 'Location', "https://#{config.hostname}#{request.url}"
+        response.status(301).send "This site must be accessed via https."
+
+mime =
+    html: 'text/html'
+    css: 'text/css'
+    js: 'text/javascript'
+    coffee: 'text/coffeescript'
+
+getMime = (path)->
+    [..., filename] = path.split '/'
+    [..., extension] = filename.split '.'
+    mime[extension]
 
 webserver.router
     .get '/~:username/:title/*', (request, response, next)->
@@ -88,7 +97,7 @@ webserver.router
                 project = yield from Project.findOne {user_id:user._id, assignment_id:assignment._id}
                 file = yield from File.findOne {project_id:project._id, path}
                 return if file
-                    response.setHeader 'Content-Type', 'text/html' #file.meta
+                    response.setHeader 'Content-Type', getMime path
                     response.send file.data
             catch exception then return next exception unless exception instanceof TypeError
             response.sendFile resolve 'client', '404.html'
@@ -108,9 +117,6 @@ webserver.router
                 module.exports = new Http('#{appserver.url}');\n\t
                 module.log('here', module.exports.url);\n
             });"
-    
-    .get '/codemirror/*', (request, response)->
-        response.sendFile resolve "#{__dirname}/node_modules/codemirror", request.params[0]
     
     .get '/view/:project_id/*', (request, response)->
         log {project_id} = request.params
@@ -264,8 +270,8 @@ start do ->
     wait 'database', db.connect()
     log yield all
 
-    webserver.ip = config.hostname
-    appserver.ip = config.hostname
+    webserver.host = config.hostname
+    appserver.host = config.hostname
 
     unless (yield from User.findOne username:'administrator')?
         yield from User.insert

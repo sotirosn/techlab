@@ -6,3 +6,4 @@ client/node_modules/
 cert.key
 cert.crt
 config.json
+portforward.sh
