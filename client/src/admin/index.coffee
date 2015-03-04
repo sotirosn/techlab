@@ -12,7 +12,6 @@ class AssignmentList extends EditTable
     class @ContextMenu extends EditTable.ContextMenu
         @extend
             viewprojects: new Array 'View Projects', ->
-                log 'contextmenu clicked'
                 @ide.loadAssignmentProjects @data, yield from http.post "#{@url}/projectlist", {_id:@data._id}
     
     @define
@@ -97,20 +96,25 @@ class AdminIDE extends IDE
         @hierarchy.clear()
         @hierarchy.append "<h4>#{user.username}</h4>"
         for project in projects
-            @loadProject 
+            @loadProject( 
+                user.username,
+                project.title,
                 _id: project._id
                 title: project.title
                 hierarchy: project.hierarchy
-    
+            )
     loadAssignmentProjects:(assignment, projects)->
         @hierarchy.clear()
         @hierarchy.append "<h4>#{assignment.title}</h4>"
         for project in projects
-            @loadProject
+            @loadProject(
+                project.username,
+                assignment.title,
                 _id: project._id
                 title: project.username
                 hierarchy: assignment.hierarchy
-    
+            )
+
 ide = new AdminIDE
 document.body.appendChild ide.element
 start ide.load()

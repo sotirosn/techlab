@@ -71,11 +71,11 @@ class Server
             @setHeader 'Set-Cookie', cookie
 
     @defineProperties
-        url:get:-> "#{@proto}://#{@ip}:#{@port}"
+        url:get:-> "#{@proto}://#{@host}:#{@port}"
 
-    constructor:({@ip, @port, cert, key})->
-        @ip ?= 'localhost'
-        @port ?= 80
+    constructor:({@host, @port, cert, key})->
+        @host ?= 'localhost'
+        @port ?= 8000
         @router = express()
         if cert && key
             @server = https.createServer {cert, key}, @router 
@@ -91,8 +91,14 @@ class Server
             next()
 
     listen:->
-        yield (callback)=> @server.listen @port, @ip, callback.bind null, null, "listening on #{@url}"
-        
+        try
+             log 'here'
+             yield (callback)=> @server.listen @port, @host, (error)=>
+                 log @port, arguments 
+                 callback null, "listening on #{@url}"
+        catch e
+             console.error "error on listen on #{url}:", e     
+ 
 class RequestError extends Error
     name: 'RequestError'
     constructor:(@status, @message)->

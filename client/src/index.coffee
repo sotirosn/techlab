@@ -5,7 +5,7 @@ http = require './http'
 
 class ClientIDE extends IDE
     class @Menu extends Html.List
-        element: @create 'div', class:'navmenu', '<h3>Assignments</h3><ul></ul>'
+        element: @create 'div', class:'navmenu', '<h3>Resources</h3><a href="~administrator/Resources/html.html">html</a><h3>Assignments</h3><ul></ul>'
         
         class @::Element extends Html.List::Element
             constructor:({title, _id})->

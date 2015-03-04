@@ -34,7 +34,6 @@ AssignmentList = (function(superClass) {
 
     ContextMenu.extend({
       viewprojects: new Array('View Projects', function*() {
-        log('contextmenu clicked');
         return this.ide.loadAssignmentProjects(this.data, (yield* http.post(this.url + "/projectlist", {
           _id: this.data._id
         })));
@@ -184,7 +183,7 @@ AdminIDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject({
+      results.push(this.loadProject(user.username, project.title, {
         _id: project._id,
         title: project.title,
         hierarchy: project.hierarchy
@@ -200,7 +199,7 @@ AdminIDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject({
+      results.push(this.loadProject(project.username, assignment.title, {
         _id: project._id,
         title: project.username,
         hierarchy: assignment.hierarchy

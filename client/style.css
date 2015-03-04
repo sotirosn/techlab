@@ -155,7 +155,9 @@ body {
     right: 0px;
 }
 
-img.htmllink {
+img[src="html-icon.png"] {
+    background: url(html-icon.png);
+    height: 50px;
     width: 50px;
 }
 

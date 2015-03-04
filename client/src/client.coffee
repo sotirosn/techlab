@@ -163,7 +163,7 @@ class IDE extends Html
     
     element: @html(
         @create 'div', id:'banner',
-            '<h1>STBCS TechCloud</h1>'# <img class="htmllink" src="html-icon.png"/></h1>'
+            '<h1>STBCS TechCloud</h1> <a href="/~instructor/Resources/html.html" target="_blank"><img src="html-icon.png"/></a></h1>'
             @create 'p', {id:'profile', hidden:true},
                 'Welcome <span>Guest</span>.<br/>',
                 Logout::
@@ -192,6 +192,7 @@ class IDE extends Html
         #@navmenu.load assignments
         @status = "#{@constructor.name} loaded"
         for project in projects
+<<<<<<< HEAD
             @loadProject @user.username, project
         
     loadProjects:(projects)->
@@ -207,5 +208,11 @@ class IDE extends Html
         log 'h', typeof hierarchy
         
         @hierarchy.append new Project _id, title, hierarchy, "http:localhost:8000/#{username}/#{title}/"
+=======
+            @loadProject @user.username, project.title, project 
+        
+    loadProject:(username, title, project)->
+        @hierarchy.append new Project project, "/~#{username}/#{title}/index.html"
+>>>>>>> 16ddfae7022ffe6d50047870aa347cf6a673d242
 
 module.exports = {IDE, Login, Logout, Project, Directory, File}

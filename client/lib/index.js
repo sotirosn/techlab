@@ -26,7 +26,7 @@ ClientIDE = (function(superClass) {
 
     Menu.prototype.element = Menu.create('div', {
       "class": 'navmenu'
-    }, '<h3>Assignments</h3><ul></ul>');
+    }, '<h3>Resources</h3><a href="~administrator/Resources/html.html">html</a><h3>Assignments</h3><ul></ul>');
 
     Menu.prototype.Element = (function(superClass2) {
       extend(Element, superClass2);
