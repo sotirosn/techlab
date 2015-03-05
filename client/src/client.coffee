@@ -73,7 +73,7 @@ class File extends Html
             @editor.tab.focus()
 
     write:(data)->
-        http.post 'file/write', {@path, project_id:@_id, data}
+        http.post 'file/write', {@path, project_id:@project._id, data}
 
 class Directory extends Html
     element: @html '<directory><label></label><div></div></directory>'
@@ -191,28 +191,18 @@ class IDE extends Html
         @logout.show()
         #@navmenu.load assignments
         @status = "#{@constructor.name} loaded"
-        for project in projects
-<<<<<<< HEAD
-            @loadProject @user.username, project
+        @loadProjects projects
         
     loadProjects:(projects)->
         @hierarchy.clear()
         for project in projects
             log 'loading', project
-            @loadProject project.username, project
+            @loadProject @user.username, project._id, project.title, project.hierarchy
         
-    loadProject:(username, {_id, title, hierarchy})->
-        log 'h1', hierarchy
+    loadProject:(username, _id, title, hierarchy)->
         try hierarchy = JSON.parse hierarchy
         catch exception then hierarchy = {}
-        log 'h', typeof hierarchy
         
         @hierarchy.append new Project _id, title, hierarchy, "http:localhost:8000/#{username}/#{title}/"
-=======
-            @loadProject @user.username, project.title, project 
-        
-    loadProject:(username, title, project)->
-        @hierarchy.append new Project project, "/~#{username}/#{title}/index.html"
->>>>>>> 16ddfae7022ffe6d50047870aa347cf6a673d242
 
 module.exports = {IDE, Login, Logout, Project, Directory, File}

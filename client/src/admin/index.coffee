@@ -98,10 +98,9 @@ class AdminIDE extends IDE
         for project in projects
             @loadProject( 
                 user.username,
+                project._id,
                 project.title,
-                _id: project._id
-                title: project.title
-                hierarchy: project.hierarchy
+                project.hierarchy
             )
     loadAssignmentProjects:(assignment, projects)->
         @hierarchy.clear()
@@ -109,10 +108,9 @@ class AdminIDE extends IDE
         for project in projects
             @loadProject(
                 project.username,
-                assignment.title,
-                _id: project._id
-                title: project.username
-                hierarchy: assignment.hierarchy
+                project._id,
+                project.username,
+                assignment.hierarchy
             )
 
 ide = new AdminIDE

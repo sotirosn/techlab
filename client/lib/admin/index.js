@@ -183,11 +183,7 @@ AdminIDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject(user.username, project.title, {
-        _id: project._id,
-        title: project.title,
-        hierarchy: project.hierarchy
-      }));
+      results.push(this.loadProject(user.username, project._id, project.title, project.hierarchy));
     }
     return results;
   };
@@ -199,11 +195,7 @@ AdminIDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject(project.username, assignment.title, {
-        _id: project._id,
-        title: project.username,
-        hierarchy: assignment.hierarchy
-      }));
+      results.push(this.loadProject(project.username, project._id, project.username, assignment.hierarchy));
     }
     return results;
   };

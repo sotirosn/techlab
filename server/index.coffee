@@ -161,7 +161,7 @@ appserver.router
         user = authorize request
         {project_id, path, data} = yield from request.json
         
-        throw 'invalid project' unless user.grade == 'administrator' || yield from Project.findOne {_id:project_id, user_id:user._id}
+        throw new Error 'invalid project' unless project_id && (user.grade == 'administrator' || yield from Project.findOne {_id:project_id, user_id:user._id})
         
         yield from File.update {project_id, path}, {$set:{data}}, upsert:true
         'file written'

@@ -133,7 +133,7 @@ File = (function(superClass) {
   File.prototype.write = function(data) {
     return http.post('file/write', {
       path: this.path,
-      project_id: this._id,
+      project_id: this.project._id,
       data: data
     });
   };
@@ -289,7 +289,7 @@ IDE = (function(superClass) {
 
   IDE.prototype.element = IDE.html(IDE.create('div', {
     id: 'banner'
-  }, '<h1>STBCS TechCloud</h1>', IDE.create('p', {
+  }, '<h1>STBCS TechCloud</h1> <a href="/~instructor/Resources/html.html" target="_blank"><img src="html-icon.png"/></a></h1>', IDE.create('p', {
     id: 'profile',
     hidden: true
   }, 'Welcome <span>Guest</span>.<br/>', Logout.prototype)), IDE.create('div', {
@@ -313,16 +313,11 @@ IDE = (function(superClass) {
   };
 
   IDE.prototype.load = function*() {
-    var i, len, project, projects, ref, results;
+    var projects, ref;
     ref = (yield* http.post('')), this.user = ref.user, projects = ref.projects;
     this.logout.show();
     this.status = this.constructor.name + " loaded";
-    results = [];
-    for (i = 0, len = projects.length; i < len; i++) {
-      project = projects[i];
-      results.push(this.loadProject(this.user.username, project));
-    }
-    return results;
+    return this.loadProjects(projects);
   };
 
   IDE.prototype.loadProjects = function(projects) {
@@ -332,22 +327,19 @@ IDE = (function(superClass) {
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
       log('loading', project);
-      results.push(this.loadProject(project.username, project));
+      results.push(this.loadProject(this.user.username, project._id, project.title, project.hierarchy));
     }
     return results;
   };
 
-  IDE.prototype.loadProject = function(username, arg) {
-    var _id, exception, hierarchy, title;
-    _id = arg._id, title = arg.title, hierarchy = arg.hierarchy;
-    log('h1', hierarchy);
+  IDE.prototype.loadProject = function(username, _id, title, hierarchy) {
+    var exception;
     try {
       hierarchy = JSON.parse(hierarchy);
     } catch (_error) {
       exception = _error;
       hierarchy = {};
     }
-    log('h', typeof hierarchy);
     return this.hierarchy.append(new Project(_id, title, hierarchy, "http:localhost:8000/" + username + "/" + title + "/"));
   };
 
