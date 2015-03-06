@@ -4,7 +4,7 @@ Module.register('admin/edittable', function(module) {var require = module.requir
 
 Html = require('html').Html;
 
-http = require('../http');
+http = require('../http').http;
 
 EditTable = (function(superClass) {
   extend(EditTable, superClass);

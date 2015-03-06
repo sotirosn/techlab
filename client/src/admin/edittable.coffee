@@ -1,5 +1,5 @@
 {Html} = require 'html'
-http = require '../http'
+{http} = require '../http'
 
 class EditTable extends Html
     element: @html '<a>create</a> | <a>save</a> | <a>revert</a><br/><table><thead></thead><tbody></tbody></table><div></div>'

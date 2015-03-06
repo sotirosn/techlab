@@ -12,7 +12,7 @@ ref1 = require('../client'), IDE = ref1.IDE, Login = ref1.Login, Logout = ref1.L
 
 TabView = require('../layout').TabView;
 
-http = require('../http');
+http = require('../http').http;
 
 AssignmentList = (function(superClass) {
   extend(AssignmentList, superClass);
@@ -195,7 +195,7 @@ AdminIDE = (function(superClass) {
     results = [];
     for (i = 0, len = projects.length; i < len; i++) {
       project = projects[i];
-      results.push(this.loadProject(project.username, project._id, project.username, assignment.hierarchy));
+      results.push(this.loadProject(project.username, project._id, project.title, assignment.hierarchy));
     }
     return results;
   };

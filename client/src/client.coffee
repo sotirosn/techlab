@@ -1,7 +1,7 @@
 {Html} = require 'html'
 {TabView} = require './layout'
 {Editor} = require './editor'
-http = require './http'
+{http, webhost} = require './http'
 {start} = require 'routine'
 
 class Login extends Html
@@ -203,6 +203,6 @@ class IDE extends Html
         try hierarchy = JSON.parse hierarchy
         catch exception then hierarchy = {}
         
-        @hierarchy.append new Project _id, title, hierarchy, "http:localhost:8000/#{username}/#{title}/"
+        @hierarchy.append new Project _id, title, hierarchy, "#{webhost}/#{username}/#{title}/"
 
 module.exports = {IDE, Login, Logout, Project, Directory, File}

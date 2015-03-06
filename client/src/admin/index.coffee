@@ -3,7 +3,7 @@
 {start, WaitAll} = require 'routine'
 {IDE, Login, Logout, Directory, Project} = require '../client'
 {TabView} = require '../layout'
-http = require '../http'
+{http} = require '../http'
 
 class AssignmentList extends EditTable
     element: @create 'div', @::clone
@@ -109,7 +109,7 @@ class AdminIDE extends IDE
             @loadProject(
                 project.username,
                 project._id,
-                project.username,
+                project.title,
                 assignment.hierarchy
             )
 

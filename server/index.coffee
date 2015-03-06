@@ -104,11 +104,14 @@ clientserver.router
     .get '/http.js', (request, response)->
         response.setHeader 'Content-Type', 'text/javascript'
         response.send "
-            Module.register('http', function(module) {\n\t
-                var require = module.require, log = module.log;\n\t
-                var Http = require('http');\n\t
-                module.exports = new Http('#{appserver.url}');\n\t
-                module.log('here', module.exports.url);\n
+            Module.register('http', function(module) {\n
+                \tvar require = module.require, log = module.log;\n
+                \tvar Http = require('http');\n
+                \tmodule.exports = {\n
+                    \t\thttp: new Http('https://#{config.hostname}:#{config.appport}'),\n
+                    \t\twebhost: 'http://#{config.hostname}'\n
+                \t};
+                \tmodule.log('here', module.exports.url);\n
             });"
     
     .get '/*', (request, response)->
@@ -222,6 +225,8 @@ appserver.router
                 if title[0] == '$'
                     users = yield from User.find {grade}
                     yield from Project.insert user_id:users, assignment_id:_id
+                    admins = yield from User.find {grade:'administrator'}
+                    yield from Project.insert user_id:admins, assignment_id:_id
                 else
                     {wait, all} = new WaitAll
                     for user in yield from User.find {grade}

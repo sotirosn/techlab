@@ -1,4 +1,4 @@
-Module.register('client', function(module) {var require = module.require, log = module.log; var Directory, Editor, File, Html, IDE, Login, Logout, Project, TabView, http, start,
+Module.register('client', function(module) {var require = module.require, log = module.log; var Directory, Editor, File, Html, IDE, Login, Logout, Project, TabView, http, ref, start, webhost,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -8,7 +8,7 @@ TabView = require('./layout').TabView;
 
 Editor = require('./editor').Editor;
 
-http = require('./http');
+ref = require('./http'), http = ref.http, webhost = ref.webhost;
 
 start = require('routine').start;
 
@@ -108,12 +108,12 @@ File = (function(superClass) {
   });
 
   function File(project1, parent, name1, mime) {
-    var ref;
+    var ref1;
     this.project = project1;
     this.parent = parent;
     this.name = name1;
     File.__super__.constructor.call(this, this.clone);
-    ref = mime.split('/'), this.type = ref[0], this.extension = ref[1];
+    ref1 = mime.split('/'), this.type = ref1[0], this.extension = ref1[1];
     this.label.innerHTML = this.name;
     this.element.setAttribute('mime', mime);
     this.element.onclick = this.onclick(function*() {
@@ -313,8 +313,8 @@ IDE = (function(superClass) {
   };
 
   IDE.prototype.load = function*() {
-    var projects, ref;
-    ref = (yield* http.post('')), this.user = ref.user, projects = ref.projects;
+    var projects, ref1;
+    ref1 = (yield* http.post('')), this.user = ref1.user, projects = ref1.projects;
     this.logout.show();
     this.status = this.constructor.name + " loaded";
     return this.loadProjects(projects);
@@ -340,7 +340,7 @@ IDE = (function(superClass) {
       exception = _error;
       hierarchy = {};
     }
-    return this.hierarchy.append(new Project(_id, title, hierarchy, "http:localhost:8000/" + username + "/" + title + "/"));
+    return this.hierarchy.append(new Project(_id, title, hierarchy, webhost + "/" + username + "/" + title + "/"));
   };
 
   return IDE;
